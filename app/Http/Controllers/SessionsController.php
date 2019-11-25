@@ -13,12 +13,15 @@ class SessionsController extends Controller
     }
     public function store(Request $request)
     {
-        $credentials=$this->validate($request,[
+        $this->validate($request,[
             'email'=>'required|email|max:255',
-            'password' => 'required'
+            'password' => 'required',
+            'captcha'=>'required|captcha'
         ]);
 
-        if (Auth::attempt($credentials)){
+
+
+        if (Auth::attempt(['email'=>$request->email,'password'=>$request->password],$request->has('remember'))){
 
             session()->flash('success','欢迎回来！');
             return redirect()->route('users.show',[Auth::user()]);
