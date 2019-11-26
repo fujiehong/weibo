@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class UserPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Create a new policy instance.
+     *
+     * @return void
+     */
+    //登录用户只能修改自己的信息
+    public function update(User $currentUser, User $user)
+    {
+        return $currentUser->id === $user->id;
+    }
+
+    public function edit(User $currentUser, User $user)
+    {
+        return $currentUser->id === $user->id;
+    }
+}
