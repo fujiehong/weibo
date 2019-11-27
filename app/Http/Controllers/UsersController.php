@@ -12,7 +12,7 @@ class UsersController extends Controller
     public function __construct()
     {
         $this->middleware('auth',[
-            'except'=>['create','store','index']
+            'except'=>['show','create','store','index','confirmEmail']
         ]);
 
         $this->middleware('guest', [
@@ -93,21 +93,20 @@ class UsersController extends Controller
     {
         $view = 'emails.confirm';
         $data = compact('user');
-        $from = 'summer@example.com';
-        $name = 'Summer';
+
         $to = $user->email;
         $subject = "感谢注册 Weibo 应用！请确认你的邮箱。";
 
-        Mail::send($view, $data, function ($message) use ($from, $name, $to, $subject) {
-            $message->from($from, $name)->to($to)->subject($subject);
+        Mail::send($view, $data, function ($message) use ($to, $subject) {
+            $message->to($to)->subject($subject);
         });
     }
-
+    //新注册用户收到激活邮件后，点击邮件地址后，请求的方法。以$token为唯一查找条件确认用户。
     public function confirmEmail($token)
     {
         $user = User::where('activation_token', $token)->firstOrFail();
 
-        $user->activated = true;
+        $user->activated = true;//激活标志位
         $user->activation_token = null;
         $user->save();
 
