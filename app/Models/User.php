@@ -62,4 +62,20 @@ class User extends Authenticatable
     {
         return $this->statuses()->orderBy('created_at','desc');
     }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class,'followers','user_id','follower_id');
+    }
+    public function followings()
+    {
+        return $this->belongsToMany(User::class,'followers','follower_id','user_id');
+    }
+
+    public function isFollowing($user_id)
+    {
+        return $this->followings->contains($user_id);
+    }
+
+
 }
